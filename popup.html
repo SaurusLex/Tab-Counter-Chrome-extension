@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        width: 200px;
+        padding: 10px;
+        font-family: sans-serif;
+      }
+      .stat {
+        margin-bottom: 8px;
+      }
+      .label {
+        font-weight: bold;
+        display: block;
+      }
+      .value {
+        font-size: 1.2em;
+        color: #4b4b4b;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stat">
+      <span class="label">Tabs in this window:</span>
+      <span id="currentWindowTabs" class="value">...</span>
+    </div>
+    <div class="stat">
+      <span class="label">Total:</span>
+      <span id="totals" class="value">...</span>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>
