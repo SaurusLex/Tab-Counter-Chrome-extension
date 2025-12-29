@@ -3,7 +3,6 @@
   "name": "Tab Counter",
   "version": "1.0",
   "description": "Shows the number of open tabs in the current window.",
-  "permissions": ["tabs"],
   "background": {
     "service_worker": "background.js"
   },
