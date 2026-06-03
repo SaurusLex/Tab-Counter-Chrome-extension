@@ -4,6 +4,12 @@ const DEFAULT_SETTINGS = {
   statsAllWindows: false,
 };
 
+const BADGE_COLORS = [
+  { name: "Gray", hex: "#4B4B4B", class: "color-gray" },
+  { name: "White", hex: "#FFFFFF", class: "color-white" },
+  { name: "Red", hex: "#FF5252", class: "color-red" },
+];
+
 async function fetchData() {
   const currentWindow = await chrome.windows.getCurrent();
   const [currentTabs, allTabs, allWindows, settings] = await Promise.all([
@@ -59,9 +65,9 @@ async function fetchData() {
 
 function render(data) {
   document.getElementById("currentWindowTabs").textContent = data.currentCount;
-  document.getElementById(
-    "totals"
-  ).textContent = `${data.totalTabs} tabs in ${data.totalWindows} windows`;
+  document.getElementById("allWindowsTabs").textContent = data.totalTabs;
+  document.getElementById("allWindowsTitle").textContent =
+    `All Windows (${data.totalWindows})`;
 
   // Render domain stats
   const statsContainer = document.getElementById("domainStats");
@@ -82,8 +88,16 @@ function render(data) {
   document.getElementById("countAllWindows").checked = data.countAllWindows;
   document.getElementById("statsAllWindows").checked = data.statsAllWindows;
 
-  document.querySelectorAll(".color-option").forEach((opt) => {
-    opt.classList.toggle("selected", opt.dataset.color === data.badgeColor);
+  // Render color picker
+  const colorPicker = document.getElementById("colorPicker");
+  colorPicker.innerHTML = "";
+  BADGE_COLORS.forEach((color) => {
+    const opt = document.createElement("div");
+    opt.className = `color-option ${color.class}`;
+    if (color.hex === data.badgeColor) opt.classList.add("selected");
+    opt.dataset.color = color.hex;
+    opt.title = color.name;
+    colorPicker.appendChild(opt);
   });
 }
 

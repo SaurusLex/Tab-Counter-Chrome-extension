@@ -19,6 +19,185 @@
         font-size: 1.2em;
         color: #4b4b4b;
       }
+      .cards-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .window-card-stack {
+        flex: 1;
+        min-width: 0;
+        position: relative;
+        height: 92px;
+      }
+      .window-card-stack > .window-card {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 80px;
+      }
+      .window-card-stack > .window-card--layer-1 {
+        transform: translate(3px, 3px);
+        z-index: 3;
+        opacity: 0.7;
+        pointer-events: none;
+      }
+      .window-card-stack > .window-card--layer-2 {
+        transform: translate(6px, 6px);
+        z-index: 2;
+        opacity: 0.55;
+        pointer-events: none;
+      }
+      .window-card-stack > .window-card--layer-3 {
+        transform: translate(9px, 9px);
+        z-index: 1;
+        opacity: 0.4;
+        pointer-events: none;
+      }
+      .window-card-stack > .window-card--front {
+        z-index: 4;
+        pointer-events: auto;
+      }
+      .window-card__content--ghost {
+        padding: 0;
+      }
+      .window-card {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        height: 80px;
+        border: 1px solid #d8d8d8;
+        border-radius: 4px;
+        background: #fafafa;
+        box-sizing: border-box;
+        overflow: hidden;
+      }
+      .window-card__chrome {
+        flex-shrink: 0;
+        background: #ececec;
+        border-bottom: 1px solid #ddd;
+        padding: 0;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        line-height: 0;
+      }
+      .window-card__controls {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        height: 7px;
+        padding-right: 3px;
+        flex-shrink: 0;
+      }
+      .window-card__control {
+        position: relative;
+        width: 5px;
+        height: 5px;
+        flex-shrink: 0;
+        opacity: 0.55;
+      }
+      .window-card__control--min::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 1px;
+        height: 1px;
+        background: #666;
+      }
+      .window-card__control--max::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border: 1px solid #666;
+        box-sizing: border-box;
+      }
+      .window-card__control--close::before,
+      .window-card__control--close::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        margin-top: -0.5px;
+        background: #666;
+      }
+      .window-card__control--close::before {
+        transform: rotate(45deg);
+      }
+      .window-card__control--close::after {
+        transform: rotate(-45deg);
+      }
+      .window-card__tabs {
+        display: flex;
+        align-items: flex-end;
+        gap: 0;
+        height: 7px;
+        line-height: 0;
+        margin: 0;
+        padding: 0;
+      }
+      .window-card__tab {
+        flex: 0 0 12px;
+        width: 12px;
+        min-width: 12px;
+        max-width: 12px;
+        height: 7px;
+        box-sizing: border-box;
+        border: 1px solid transparent;
+        border-bottom: none;
+        border-radius: 2px 2px 0 0;
+        position: relative;
+      }
+      .window-card__tab:nth-child(1) {
+        z-index: 1;
+        background: #c5d6e8;
+        border-color: #b0c4d8;
+        border-top-left-radius: 2px;
+      }
+      .window-card__tab + .window-card__tab {
+        margin-left: -1px;
+      }
+      .window-card__tab:nth-child(2) {
+        z-index: 2;
+        background: #d4e2d0;
+        border-color: #bccfb8;
+      }
+      .window-card__tab:nth-child(3) {
+        z-index: 3;
+        background: #e8ddd4;
+        border-color: #d4c8bc;
+      }
+      .window-card__content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2px 4px 6px;
+        min-height: 0;
+      }
+      .window-card__title {
+        font-size: 0.7em;
+        font-weight: 600;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        margin-bottom: 4px;
+        text-align: center;
+        line-height: 1.2;
+      }
+      .window-card__count {
+        font-size: 1.5em;
+        font-weight: 700;
+        line-height: 1;
+        color: #4b4b4b;
+      }
       .section-title {
         font-size: 0.9em;
         color: #888;
@@ -145,19 +324,96 @@
     </style>
   </head>
   <body>
-    <div class="stat">
-      <span class="label">Tabs in this window:</span>
-      <span id="currentWindowTabs" class="value">...</span>
-    </div>
-    <div class="stat">
-      <span class="label">Total:</span>
-      <span id="totals" class="value">...</span>
+    <div class="cards-row">
+      <div class="window-card">
+        <div class="window-card__chrome" aria-hidden="true">
+          <div class="window-card__tabs">
+            <span class="window-card__tab"></span>
+            <span class="window-card__tab"></span>
+            <span class="window-card__tab"></span>
+          </div>
+          <div class="window-card__controls">
+            <span class="window-card__control window-card__control--min"></span>
+            <span class="window-card__control window-card__control--max"></span>
+            <span class="window-card__control window-card__control--close"></span>
+          </div>
+        </div>
+        <div class="window-card__content">
+          <span class="window-card__title">This Window</span>
+          <span id="currentWindowTabs" class="window-card__count">…</span>
+        </div>
+      </div>
+      <div class="window-card-stack">
+        <div class="window-card window-card--layer-1" aria-hidden="true">
+          <div class="window-card__chrome">
+            <div class="window-card__tabs">
+              <span class="window-card__tab"></span>
+              <span class="window-card__tab"></span>
+              <span class="window-card__tab"></span>
+            </div>
+            <div class="window-card__controls">
+              <span class="window-card__control window-card__control--min"></span>
+              <span class="window-card__control window-card__control--max"></span>
+              <span class="window-card__control window-card__control--close"></span>
+            </div>
+          </div>
+          <div class="window-card__content window-card__content--ghost"></div>
+        </div>
+        <div class="window-card window-card--layer-2" aria-hidden="true">
+          <div class="window-card__chrome">
+            <div class="window-card__tabs">
+              <span class="window-card__tab"></span>
+              <span class="window-card__tab"></span>
+              <span class="window-card__tab"></span>
+            </div>
+            <div class="window-card__controls">
+              <span class="window-card__control window-card__control--min"></span>
+              <span class="window-card__control window-card__control--max"></span>
+              <span class="window-card__control window-card__control--close"></span>
+            </div>
+          </div>
+          <div class="window-card__content window-card__content--ghost"></div>
+        </div>
+        <div class="window-card window-card--layer-3" aria-hidden="true">
+          <div class="window-card__chrome">
+            <div class="window-card__tabs">
+              <span class="window-card__tab"></span>
+              <span class="window-card__tab"></span>
+              <span class="window-card__tab"></span>
+            </div>
+            <div class="window-card__controls">
+              <span class="window-card__control window-card__control--min"></span>
+              <span class="window-card__control window-card__control--max"></span>
+              <span class="window-card__control window-card__control--close"></span>
+            </div>
+          </div>
+          <div class="window-card__content window-card__content--ghost"></div>
+        </div>
+        <div class="window-card window-card--front">
+          <div class="window-card__chrome" aria-hidden="true">
+            <div class="window-card__tabs">
+              <span class="window-card__tab"></span>
+              <span class="window-card__tab"></span>
+              <span class="window-card__tab"></span>
+            </div>
+            <div class="window-card__controls">
+              <span class="window-card__control window-card__control--min"></span>
+              <span class="window-card__control window-card__control--max"></span>
+              <span class="window-card__control window-card__control--close"></span>
+            </div>
+          </div>
+          <div class="window-card__content">
+            <span class="window-card__title" id="allWindowsTitle">All Windows</span>
+            <span id="allWindowsTabs" class="window-card__count">…</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="section-title">Stats</div>
     <div class="switch-container" style="margin-bottom: 8px">
       <span class="label" style="font-size: 0.85em; font-weight: normal"
-        >Show all windows</span
+        >Include all windows</span
       >
       <label
         class="switch"
@@ -184,21 +440,7 @@
     <div class="stat" style="margin-top: 10px">
       <span class="label">Badge Color:</span>
       <div class="color-picker" id="colorPicker">
-        <div
-          class="color-option color-gray selected"
-          data-color="#4B4B4B"
-          title="Gray"
-        ></div>
-        <div
-          class="color-option color-white"
-          data-color="#FFFFFF"
-          title="White"
-        ></div>
-        <div
-          class="color-option color-red"
-          data-color="#FF5252"
-          title="Red"
-        ></div>
+        <!-- Generated by JS -->
       </div>
     </div>
     <script src="popup.js"></script>
