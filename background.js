@@ -68,6 +68,11 @@ chrome.tabs.onRemoved.addListener(updateBadge);
 chrome.tabs.onDetached.addListener(updateBadge);
 chrome.tabs.onAttached.addListener(updateBadge);
 chrome.tabs.onActivated.addListener(updateBadge);
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  if (changeInfo.url || changeInfo.status === "complete") {
+    updateBadge();
+  }
+});
 
 chrome.windows.onFocusChanged.addListener(updateBadge);
 chrome.windows.onCreated.addListener(updateBadge);
