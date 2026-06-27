@@ -10,6 +10,61 @@ const BADGE_COLORS = [
   { name: "Red", hex: "#FF5252", class: "color-red" },
 ];
 
+const SWITCH_CONFIGS = [
+  {
+    id: "statsAllWindows",
+    label: "Include all windows",
+    mountId: "statsSwitches",
+    onChange: () => init(),
+  },
+  {
+    id: "countAllWindows",
+    label: "Count all windows",
+    mountId: "badgeSwitches",
+  },
+];
+
+const switchRefs = new Map();
+
+function createSwitch({ id, label, container, onChange }) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "switch-container";
+
+  const labelSpan = document.createElement("span");
+  labelSpan.className = "label";
+  labelSpan.textContent = label;
+
+  const switchLabel = document.createElement("label");
+  switchLabel.className = "switch";
+
+  const input = document.createElement("input");
+  input.type = "checkbox";
+  input.id = id;
+
+  const slider = document.createElement("span");
+  slider.className = "slider";
+
+  switchLabel.append(input, slider);
+  wrapper.append(labelSpan, switchLabel);
+  container.appendChild(wrapper);
+
+  input.addEventListener("change", async (e) => {
+    const checked = e.target.checked;
+    await chrome.storage.local.set({ [id]: checked });
+    if (onChange) onChange(checked);
+  });
+
+  return { input };
+}
+
+function mountSwitches() {
+  SWITCH_CONFIGS.forEach((config) => {
+    const container = document.getElementById(config.mountId);
+    const { mountId, ...switchConfig } = config;
+    switchRefs.set(config.id, createSwitch({ ...switchConfig, container }));
+  });
+}
+
 async function fetchData() {
   const currentWindow = await chrome.windows.getCurrent();
   const [currentTabs, allTabs, allWindows, settings] = await Promise.all([
@@ -85,8 +140,9 @@ function render(data) {
     statsContainer.appendChild(item);
   });
 
-  document.getElementById("countAllWindows").checked = data.countAllWindows;
-  document.getElementById("statsAllWindows").checked = data.statsAllWindows;
+  switchRefs.forEach((ref, id) => {
+    ref.input.checked = data[id];
+  });
 
   // Render color picker
   const colorPicker = document.getElementById("colorPicker");
@@ -110,16 +166,7 @@ async function init() {
   }
 }
 
-document.getElementById("countAllWindows").addEventListener("change", (e) => {
-  chrome.storage.local.set({ countAllWindows: e.target.checked });
-});
-
-document
-  .getElementById("statsAllWindows")
-  .addEventListener("change", async (e) => {
-    await chrome.storage.local.set({ statsAllWindows: e.target.checked });
-    init(); // Refresh stats immediately
-  });
+mountSwitches();
 
 document.getElementById("colorPicker").addEventListener("click", (e) => {
   const option = e.target.closest(".color-option");

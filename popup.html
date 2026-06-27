@@ -215,11 +215,19 @@
         gap: 10px;
         margin-top: 5px;
       }
+      .switch-container .label,
+      .stat > .label {
+        font-size: 0.9em;
+        font-weight: 600;
+      }
+      #statsSwitches .switch-container {
+        margin-bottom: 8px;
+      }
       .switch {
         position: relative;
         display: inline-block;
-        width: 34px;
-        height: 20px;
+        width: 27px;
+        height: 16px;
       }
       .switch input {
         opacity: 0;
@@ -240,10 +248,11 @@
       .slider:before {
         position: absolute;
         content: "";
-        height: 14px;
-        width: 14px;
-        left: 3px;
-        bottom: 3px;
+        height: 11px;
+        width: 11px;
+        left: 2px;
+        top: 50%;
+        transform: translateY(-50%);
         background-color: white;
         transition: 0.4s;
         border-radius: 50%;
@@ -252,7 +261,7 @@
         background-color: #4b4b4b;
       }
       input:checked + .slider:before {
-        transform: translateX(14px);
+        transform: translateY(-50%) translateX(12px);
       }
       /* Color picker styles */
       .color-picker {
@@ -411,31 +420,13 @@
     </div>
 
     <div class="section-title">Stats</div>
-    <div class="switch-container" style="margin-bottom: 8px">
-      <span class="label" style="font-size: 0.85em; font-weight: normal"
-        >Include all windows</span
-      >
-      <label
-        class="switch"
-        style="transform: scale(0.8); transform-origin: left"
-      >
-        <input type="checkbox" id="statsAllWindows" />
-        <span class="slider"></span>
-      </label>
-    </div>
+    <div id="statsSwitches"></div>
     <div id="domainStats" class="domain-list">
       <div class="loading">Loading stats...</div>
     </div>
 
     <div class="section-title">Badge Settings</div>
-
-    <div class="switch-container">
-      <span class="label">Count all windows</span>
-      <label class="switch">
-        <input type="checkbox" id="countAllWindows" />
-        <span class="slider"></span>
-      </label>
-    </div>
+    <div id="badgeSwitches"></div>
 
     <div class="stat" style="margin-top: 10px">
       <span class="label">Badge Color:</span>
